@@ -1,0 +1,103 @@
+<html>
+	<head>
+	<!-- 
+	 * Author:		Gianluca Guarini
+	 * Contact: 	gianluca.guarini@gmail.com
+	 * Website:		http://www.gianlucaguarini.com/
+	 * Twitter:		@gianlucaguarini
+	-->
+		<title>Push notification server streaming on a MySQL db</title>
+		<style>
+			article {
+				float:left;
+				margin:0;
+				padding:5px;
+				clear:both;
+				display:block;
+				width:20%;
+				border: 1px solid gray;
+
+			}
+			dt {
+				background:#ddd;
+			}
+			time {
+				color:gray;
+			}
+			#zone_chat strong {
+                color: white;
+                background-color: black;
+                padding: 2px;
+            }
+		</style>
+	</head>
+	<body>
+        <time></time>
+        <div id="container">Loading ...</div>
+        <div id="mail">Chargement ...</div>
+
+        <h1>le chat</h1>
+
+        <form action="/" method="post" id="form_chat">
+        	<input type="text" name="message" id="message" placeholder="votre message..." size="50" autofocus />
+        	<input type="submit" value="envoyer" id="envoi_message">
+        </form>
+        <section >
+        	<article id="zone_chat">
+        		
+        	</article>
+        	
+        </section>
+
+    <script src="socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script>
+ 
+        // create a new websocket
+        var socket = io.connect('http://localhost:8080');
+        // on message received we print all the data inside the #container div
+       socket.on('notification', function (data) {
+        var usersList = "<article>";
+        var listMail = "<article>";
+        $.each(data.users,function(index,user){
+            usersList += 
+            			"<tr>" +
+            			"<td>" + user.nom + "</td>\n" +
+                         "<td>" + user.prenom + "</td>\n" +
+                         "</tr>";
+        });
+         
+        $.each(data.users,function(index,user){
+        	listMail += "<p>" + user.utilisateur + "</p>\n";
+        });
+        listMail += "</article";
+        usersList += "</article>";
+        $('#container').html(usersList);
+   		$('#mail').html(listMail);
+        $('time').html('Last Update:' + data.time);
+		
+     });
+    /*   var pseudo = prompt('Quel est votre pseudo?');
+        socket.emit('nouveau_client', pseudo);
+        document.title = pseudo + ' - ' + document.title;
+
+        socket.on('message', function(data){
+        	insereMessage(data.pseudo, data.message)
+        })
+        socket.on('nouveau_client', function(pseudo){
+        	//$ pour ajouter dans balise
+        	$('#zone_chat').prepend('<p><em>' + pseudo + ' a rejoint le Chat!</em></p>');
+        })
+        	$('#form_chat').submit(function(){
+        		var message = $('#message').val();
+        		socket.emit('message', message);//transmet le message aux autres
+        		insereMessage(pseudo, message); //affiche le message sur notre page
+        		$('#message').val('').focus(); //vide la zone de chat
+        		return false;
+        	});
+function insereMessage(pseudo, message){
+	$('#zone_chat').prepend('<p><strong>'+ pseudo + '</strong>' + message + '</p>');
+}*/
+    </script>
+    </body>
+</html>
